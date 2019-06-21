@@ -1,5 +1,4 @@
-| This data was extracted from the census bureau database found at
-| http://www.census.gov/ftp/pub/DES/www/welcome.html
+| This data was extracted from the census bureau database found at http://www.census.gov/ftp/pub/DES/www/welcome.html
 | Donor: Ronny Kohavi and Barry Becker,
 |        Data Mining and Visualization
 |        Silicon Graphics.
