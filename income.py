@@ -48,6 +48,8 @@ over50 = {
 
 
 reader = csv.DictReader(file, fieldNames)
+# Skip the column headers
+next(reader)
 
 # For each field name, add up all people that fit in that each category for that field for each income level
 for field in dimFieldNames:
@@ -59,10 +61,13 @@ for field in dimFieldNames:
             under50[field] = addToKey(under50[field], row[field].strip(), int(row['fnlwgt']))
     # Reset iterator
     file.seek(0)
+    next(reader)
 
 # Display results
 for field in dimFieldNames:
     print(field)
-    print("Over 50: " + over50[field])
-    print("Under 50: " + under50[field])
+    print("Over 50:")
+    print(over50[field])
+    print("Under 50:")
+    print(under50[field])
 
