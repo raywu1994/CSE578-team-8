@@ -30,7 +30,7 @@ comb_df=pd.concat([trn_data,test_data],axis=0)
 comb_df['income']=comb_df['income'].apply(lambda x: 1 if x==' >50K' else 0)
 
 #### Removing NA and unknown nows from the train and Test data set
-copy_df=comb_df
+vis_df=comb_df
 for column in comb_df.columns:
     if type(comb_df[column][0]) == str :
         comb_df[column] = comb_df[column].apply(lambda y: y.replace(" ",""))
@@ -65,3 +65,5 @@ metrics.accuracy_score(test_y,tre_prdct)
 print(A_score)
 
 #############Visualizations to show the data#######################################
+
+## use vs_df dataframe for visualization ##############
