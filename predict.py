@@ -17,19 +17,19 @@ def main():
     # clf = neighbors.KNeighborsClassifier(n_neighbors=20)
     # clf = naive_bayes.GaussianNB()
 
-    clf.fit(train_x, train_y)
-    pred = clf.predict(test_x)
-
-    report(clf, pred, test_y)
-    visualizations(clf, test_x)
-
     # # test set extracted from training set
     # from sklearn.model_selection import train_test_split
     # train_x, train_y = load_data('adult.data')
     # train_x, test_x, train_y, test_y = train_test_split(train_x, train_y,
     #     test_size=0.3)
-    # clf = train(train_x, train_y)
-    # predict(clf, test_x, test_y)
+
+    # train / predict
+    clf.fit(train_x, train_y)
+    pred = clf.predict(test_x)
+
+    # report
+    report(clf, pred, test_y)
+    visualizations(clf, test_x)
 
 def visualizations(clf, test_x):
     # decision tree
