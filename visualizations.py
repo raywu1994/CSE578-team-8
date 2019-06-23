@@ -34,10 +34,10 @@ def generateVsEarningsStackedBarChart(df, columnName, figSizeWidth = 20, figSize
     p2 = plt.bar(r, bars2, bottom=bars1, color='#557f2d', edgecolor='white', width=barWidth)
 
     plt.legend((p1[0], p2[0]), ('<=50k', '>50k'), loc='upper right')
-    plt.title(f'{columnName} vs Earnings')
-    plt.ylabel('Count')
+    plt.title(f'{columnName} vs Earnings', weight='bold')
+    plt.ylabel('Count', weight='bold')
     plt.xticks(r, columnValues)
-    plt.xlabel(columnName)
+    plt.xlabel(columnName, weight='bold')
 
     plt.savefig(f'vis/{columnName}_vs_earnings.png')
 
