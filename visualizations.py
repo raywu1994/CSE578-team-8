@@ -22,6 +22,7 @@ def main():
     r = np.arange(len(result.index))
     barWidth = 0.5
 
+    plt.figure(figsize=(20,5))
     p1 = plt.bar(r, bars1, color='#7f6d5f', edgecolor='white', width=barWidth)
     p2 = plt.bar(r, bars2, bottom=bars1, color='#557f2d', edgecolor='white', width=barWidth)
 
@@ -31,7 +32,9 @@ def main():
     plt.xticks(r, ages)
     plt.xlabel('Age')
 
+
     plt.savefig('vis/age_vs_earnings.png')
+    # plt.show()
 
 def load_data():
     #read in both datasets, combine into one
