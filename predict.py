@@ -47,15 +47,19 @@ def report(clf, pred, test_y):
     print('classifier:', clf)
     print()
 
-    print('confusion_matrix:')
+    print('confusion matrix:')
     print(metrics.confusion_matrix(test_y, pred))
     print()
 
-    print('classification_report:')
+    print('classification report:')
     print(metrics.classification_report(test_y, pred))
 
-    print('accuracy_score:')
+    print('accuracy score:')
     print(metrics.accuracy_score(test_y, pred))
+    print()
+
+    print('f1 score:')
+    print(metrics.f1_score(test_y, pred))
     print()
 
 def load_data(path):
