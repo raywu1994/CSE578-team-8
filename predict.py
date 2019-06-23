@@ -2,26 +2,25 @@ import pandas as pd
 
 from sklearn import tree
 from sklearn import metrics
+from sklearn import ensemble
+from sklearn import neighbors
+from sklearn import naive_bayes
 from sklearn import linear_model
-
-tree_max_depth = None
-# visualizing larger trees is expensive
-tree_vis_max_depth = 6
-
-column_names = [
-    'age', 'workclass', 'fnlwgt', 'education', 'education-num',
-    'marital-status', 'occupation', 'relationship', 'race', 'sex',
-    'capital-gain', 'capital-loss', 'hours-per-week', 'native-country', 'income',
-    ]
 
 def main():
     train_x, train_y = load_data('adult.data')
     test_x, test_y = load_data('adult.test')
 
-    clf = train(train_x, train_y, max_depth=tree_max_depth)
+    clf = tree.DecisionTreeClassifier(max_depth=6)
+    # clf = ensemble.RandomForestClassifier(n_estimators=10)
+    # clf = linear_model.LogisticRegression(solver='lbfgs')
+    # clf = neighbors.KNeighborsClassifier(n_neighbors=20)
+    # clf = naive_bayes.GaussianNB()
+
+    clf.fit(train_x, train_y)
     pred = clf.predict(test_x)
 
-    report(pred, test_y)
+    report(clf, pred, test_y)
     visualizations(clf, test_x)
 
     # # test set extracted from training set
@@ -32,21 +31,22 @@ def main():
     # clf = train(train_x, train_y)
     # predict(clf, test_x, test_y)
 
-def train(train_x, train_y, max_depth=None):
-    clf = tree.DecisionTreeClassifier(max_depth=max_depth)
-    return clf.fit(train_x, train_y)
-
 def visualizations(clf, test_x):
     # decision tree
-    tree.export_graphviz(clf, out_file='tree.dot',
-        max_depth=tree_vis_max_depth,
-        feature_names=test_x.columns,
-        class_names=['>50k', '<=50k'],
-        filled=True, rounded=True)
-    print('decision tree saved to: tree.dot')
+    if isinstance(clf, tree.DecisionTreeClassifier):
+        path = 'tree.dot'
+        tree.export_graphviz(clf, out_file=path,
+            max_depth=6,
+            feature_names=test_x.columns,
+            class_names=['>50k', '<=50k'],
+            filled=True, rounded=True)
+        print('decision tree saved to: {}'.format(path))
+        print()
+
+def report(clf, pred, test_y):
+    print('classifier:', clf)
     print()
 
-def report(pred, test_y):
     print('confusion_matrix:')
     print(metrics.confusion_matrix(test_y, pred))
     print()
@@ -59,6 +59,13 @@ def report(pred, test_y):
     print()
 
 def load_data(path):
+    column_names = [
+        'age', 'workclass', 'fnlwgt', 'education', 'education-num',
+        'marital-status', 'occupation', 'relationship', 'race', 'sex',
+        'capital-gain', 'capital-loss', 'hours-per-week', 'native-country',
+        'income',
+        ]
+
     df = pd.read_csv('adult.data', header=None, names=column_names,
         skipinitialspace=True)
     # infer types of columns
