@@ -13,7 +13,9 @@ def main():
     generateVsEarningsStackedBarChart(df, 'Race')
     generateVsEarningsStackedBarChart(df, 'Gender')
     generateVsEarningsStackedBarChart(df, 'From_USA')
-    
+    generateVsEarningsStackedBarChart(df, 'Age_Bin')
+    generateVsEarningsStackedBarChart(df, 'Hours_Per_Week_Bin')
+
 def load_data():
     #read in both datasets, combine into one
     training_data = pd.read_csv('adult.csv')
@@ -24,7 +26,10 @@ def load_data():
     #set some calculated fields
     all_data['Below_50k'] = all_data['Salarys'].apply(lambda x: False if x == ' >50K' else True)
     all_data['From_USA'] = all_data['NTVCTRY'].apply(lambda x: True if x == ' United-States' else False)
-
+    all_data['Age_Bin'] = np.select([all_data['Age'] < 20, all_data['Age'] < 30, all_data['Age'] < 40, all_data['Age'] < 50, all_data['Age'] < 60, all_data['Age'] < 70, True],
+                                       ['17-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-90'])
+    all_data['Hours_Per_Week_Bin'] = np.select([all_data['HRSPERWK'] < 30, all_data['HRSPERWK'] < 40, all_data['HRSPERWK'] == 40, True],
+                                       ['Under 30', '30-39', '40', 'Over 40'])
     return all_data
 
 def generateVsEarningsStackedBarChart(df, columnName, figSizeWidth = 20, figSizeLength = 5, barWidth = 0.5,  xticksRotation = None):
