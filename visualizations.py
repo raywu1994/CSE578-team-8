@@ -15,6 +15,15 @@ def main():
     generateVsEarningsStackedBarChart(df, 'From_USA')
     generateVsEarningsStackedBarChart(df, 'Age_Bin')
     generateVsEarningsStackedBarChart(df, 'Hours_Per_Week_Bin')
+    plt.clf()
+    generateOverUnderPieCharts(df, 'Education')
+    generateOverUnderPieCharts(df, 'Martial_Status')
+    generateOverUnderPieCharts(df, 'Occupation', figSizeWidth = 25)
+    generateOverUnderPieCharts(df, 'Relationship')
+    generateOverUnderPieCharts(df, 'Race', figSizeWidth = 25)
+    generateOverUnderPieCharts(df, 'Gender')
+    generateOverUnderPieCharts(df, 'Age_Bin')
+    generateOverUnderPieCharts(df, 'Hours_Per_Week_Bin')
 
 def load_data():
     #read in both datasets, combine into one
@@ -56,5 +65,22 @@ def generateVsEarningsStackedBarChart(df, columnName, figSizeWidth = 20, figSize
 
     plt.savefig(f'vis/{columnName}_vs_earnings.png')
 
+def generateOverUnderPieCharts(df, columnName, figSizeWidth = 20, figSizeLength = 5, barWidth = 0.5,  xticksRotation = None):
+    df = df[[columnName, 'Below_50k']]
+    above50k = df.loc[df['Below_50k'] == False].groupby(columnName).count().rename(columns={'Below_50k': 'CountOfAbove50k'})
+    below50k = df.loc[df['Below_50k'] == True].groupby(columnName).count().rename(columns={'Below_50k': 'CountOfBelow50k'})
+
+    values = list(above50k['CountOfAbove50k'])
+    above50k.plot.pie(y='CountOfAbove50k', labels=values)
+    plt.ylabel('')
+    plt.legend(labels=above50k.axes[0].values).set_bbox_to_anchor((1.1, .9, 0.1, 0.1))
+    plt.savefig(f'vis/{columnName}_over50.png')
+    
+    values = list(below50k['CountOfBelow50k'])
+    below50k.plot.pie(y='CountOfBelow50k', labels=values)
+    plt.ylabel('')
+    plt.legend(labels=below50k.axes[0].values).set_bbox_to_anchor((1.1, .9, 0.1, 0.1))
+    plt.savefig(f'vis/{columnName}_under50.png')
+    
 if __name__ == "__main__":
     main()
