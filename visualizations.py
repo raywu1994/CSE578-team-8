@@ -5,7 +5,16 @@ import matplotlib.pyplot as plt
 def main():
     df = load_data()
 
-    
+    generateVsEarningsStackedBarChart(df, 'Age')
+    generateVsEarningsStackedBarChart(df, 'Education')
+    generateVsEarningsStackedBarChart(df, 'Marital Status')
+    generateVsEarningsStackedBarChart(df, 'Occupation', figSizeWidth = 25, figSizeLength = 10, xticksRotation = 25)
+    generateVsEarningsStackedBarChart(df, 'Relationship')
+    generateVsEarningsStackedBarChart(df, 'Race')
+    generateVsEarningsStackedBarChart(df, 'Gender')
+    generateVsEarningsStackedBarChart(df, 'From_USA')
+    generateVsEarningsStackedBarChart(df, 'Hours Worked Per Week')
+    plt.close('all') # to prevent memory warnings
     
     generateOverUnderPieCharts(df, 'Education')
     generateOverUnderPieCharts(df, 'Marital Status')
@@ -18,7 +27,7 @@ def main():
     plt.close('all') # to prevent memory warnings
         
     generateGeneralPopulationPieCharts(df, 'Education')
-    generateGeneralPopulationPieCharts(df, 'Martial_Status')
+    generateGeneralPopulationPieCharts(df, 'Marital Status')
     generateGeneralPopulationPieCharts(df, 'Occupation')
     generateGeneralPopulationPieCharts(df, 'Relationship')
     generateGeneralPopulationPieCharts(df, 'Race')
