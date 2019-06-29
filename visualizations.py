@@ -4,17 +4,8 @@ import matplotlib.pyplot as plt
 
 def main():
     df = load_data()
+
     
-    generateVsEarningsStackedBarChart(df, 'Age')
-    generateVsEarningsStackedBarChart(df, 'Education')
-    generateVsEarningsStackedBarChart(df, 'Marital Status')
-    generateVsEarningsStackedBarChart(df, 'Occupation', figSizeWidth = 25, figSizeLength = 10, xticksRotation = 25)
-    generateVsEarningsStackedBarChart(df, 'Relationship')
-    generateVsEarningsStackedBarChart(df, 'Race')
-    generateVsEarningsStackedBarChart(df, 'Gender')
-    generateVsEarningsStackedBarChart(df, 'From_USA')
-    generateVsEarningsStackedBarChart(df, 'Hours Worked Per Week')
-    plt.close('all') # to prevent memory warnings
     
     generateOverUnderPieCharts(df, 'Education')
     generateOverUnderPieCharts(df, 'Marital Status')
@@ -89,28 +80,28 @@ def generateOverUnderPieCharts(df, columnName, figSizeWidth = 10, figSizeLength 
     above50k = df.loc[df['Below_50k'] == False].groupby(columnName).count().rename(columns={'Below_50k': 'CountOfAbove50k'})
     below50k = df.loc[df['Below_50k'] == True].groupby(columnName).count().rename(columns={'Below_50k': 'CountOfBelow50k'})
 
-    values = list(above50k['CountOfAbove50k'])
+    values = ["{}, {}%".format(a, b) for a, b in zip(above50k['CountOfAbove50k'], round(above50k['CountOfAbove50k']/sum(above50k['CountOfAbove50k']) * 100, 1))]
     above50k.plot.pie(y='CountOfAbove50k', labels=values, figsize=(figSizeWidth, figSizeLength))
     plt.ylabel('')
     plt.title(columnName + ', Over 50K')
-    plt.legend(labels=above50k.axes[0].values).set_bbox_to_anchor((1.2, .9, 0.1, 0.1))
+    plt.legend(labels=above50k.axes[0].values).set_bbox_to_anchor((1.25, .9, 0.1, 0.1))
     plt.savefig(f'vis/{columnName}_over50.png')
     
-    values = list(below50k['CountOfBelow50k'])
+    values = ["{}, {}%".format(a, b) for a, b in zip(below50k['CountOfBelow50k'], round(below50k['CountOfBelow50k']/sum(below50k['CountOfBelow50k']) * 100, 1))]
     below50k.plot.pie(y='CountOfBelow50k', labels=values, figsize=(figSizeWidth, figSizeLength))
     plt.ylabel('')
     plt.title(columnName + ', Under 50K')
-    plt.legend(labels=below50k.axes[0].values).set_bbox_to_anchor((1.2, .9, 0.1, 0.1))
+    plt.legend(labels=below50k.axes[0].values).set_bbox_to_anchor((1.25, .9, 0.1, 0.1))
     plt.savefig(f'vis/{columnName}_under50.png')
 
 def generateGeneralPopulationPieCharts(df, columnName, figSizeWidth = 10, figSizeLength = 5, barWidth = 0.5,  xticksRotation = None):
     df = df[[columnName, 'Below_50k']]
     df = df.groupby(columnName).count().rename(columns={'Below_50k': 'Count'})
-    values = list(df['Count'])
+    values = ["{}, {}%".format(a, b) for a, b in zip(df['Count'], round(df['Count']/sum(df['Count']) * 100, 1))]
     df.plot.pie(y='Count', labels=values, figsize=(figSizeWidth, figSizeLength))
     plt.ylabel('')
     plt.title(columnName + ' Totals in Population')
-    plt.legend(labels=df.axes[0].values).set_bbox_to_anchor((1.2, .9, 0.1, 0.1))
+    plt.legend(labels=df.axes[0].values).set_bbox_to_anchor((1.25, .9, 0.1, 0.1))
     plt.savefig(f'vis/{columnName}_total.png')
     
     
