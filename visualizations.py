@@ -4,26 +4,36 @@ import matplotlib.pyplot as plt
 
 def main():
     df = load_data()
-
+    
     generateVsEarningsStackedBarChart(df, 'Age')
     generateVsEarningsStackedBarChart(df, 'Education')
-    generateVsEarningsStackedBarChart(df, 'Martial_Status')
+    generateVsEarningsStackedBarChart(df, 'Marital Status')
     generateVsEarningsStackedBarChart(df, 'Occupation', figSizeWidth = 25, figSizeLength = 10, xticksRotation = 25)
     generateVsEarningsStackedBarChart(df, 'Relationship')
     generateVsEarningsStackedBarChart(df, 'Race')
     generateVsEarningsStackedBarChart(df, 'Gender')
     generateVsEarningsStackedBarChart(df, 'From_USA')
-    generateVsEarningsStackedBarChart(df, 'Age_Bin')
-    generateVsEarningsStackedBarChart(df, 'Hours_Per_Week_Bin')
+    generateVsEarningsStackedBarChart(df, 'Hours Worked Per Week')
     plt.close('all') # to prevent memory warnings
+    
     generateOverUnderPieCharts(df, 'Education')
-    generateOverUnderPieCharts(df, 'Martial_Status')
+    generateOverUnderPieCharts(df, 'Marital Status')
     generateOverUnderPieCharts(df, 'Occupation')
     generateOverUnderPieCharts(df, 'Relationship')
     generateOverUnderPieCharts(df, 'Race')
     generateOverUnderPieCharts(df, 'Gender')
-    generateOverUnderPieCharts(df, 'Age_Bin')
-    generateOverUnderPieCharts(df, 'Hours_Per_Week_Bin')
+    generateOverUnderPieCharts(df, 'Age')
+    generateOverUnderPieCharts(df, 'Hours Worked Per Week')
+    plt.close('all') # to prevent memory warnings
+        
+    generateGeneralPopulationPieCharts(df, 'Education')
+    generateGeneralPopulationPieCharts(df, 'Martial_Status')
+    generateGeneralPopulationPieCharts(df, 'Occupation')
+    generateGeneralPopulationPieCharts(df, 'Relationship')
+    generateGeneralPopulationPieCharts(df, 'Race')
+    generateGeneralPopulationPieCharts(df, 'Gender')
+    generateGeneralPopulationPieCharts(df, 'Age')
+    generateGeneralPopulationPieCharts(df, 'Hours Worked Per Week')
 
 def load_data():
     #read in both datasets, combine into one
@@ -32,11 +42,20 @@ def load_data():
     test_data = pd.read_csv('adult.test.csv', names=headers)
     all_data = pd.concat([training_data, test_data])
 
-    #set some calculated fields
+    #set some calculated fields and clean column names for presentation
     all_data['Below_50k'] = all_data['Salarys'].apply(lambda x: False if x == ' >50K' else True)
     all_data['From_USA'] = all_data['NTVCTRY'].apply(lambda x: True if x == ' United-States' else False)
-    all_data['Age_Bin'] = pd.cut(all_data['Age'],bins=[0,19,29,39,49,59,69,120], labels=['17-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-90'])
-    all_data['Hours_Per_Week_Bin'] = pd.cut(all_data['HRSPERWK'], bins=[0,29,39,40,100], labels=['Under 30', '30-39', '40', 'Over 40'])
+    all_data['Age'] = pd.cut(all_data['Age'],bins=[0,19,29,39,49,59,69,120], labels=['17-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-90'])
+    all_data['Hours Worked Per Week'] = pd.cut(all_data['HRSPERWK'], bins=[0,29,39,40,59,1000], labels=['Under 30', '30-39', '40', '41-59','Over 60'])
+    all_data['Education'] = np.select([all_data['Education'].isin([' 9th',' 10th',' 11th',' 12th']),
+                                            all_data['Education'] == ' HS-grad', all_data['Education'].isin([' Assoc-acdm',' Assoc-voc']),
+                                            all_data['Education'] == ' Bachelors', all_data['Education'] == ' Some-college',
+                                            all_data['Education'].isin([' Masters',' Doctorate'])],
+                                          ['Some High School', 'HS Grad', 'Associates Degree', 'Bachelors Degree', 'Some College', 'Graduate Degree'], default='Other')
+
+    # Fix this typo is the data file
+    all_data['Marital Status'] = all_data['Martial_Status']
+    
     return all_data
 
 def generateVsEarningsStackedBarChart(df, columnName, figSizeWidth = 20, figSizeLength = 5, barWidth = 0.5,  xticksRotation = None):
@@ -74,15 +93,27 @@ def generateOverUnderPieCharts(df, columnName, figSizeWidth = 10, figSizeLength 
     above50k.plot.pie(y='CountOfAbove50k', labels=values, figsize=(figSizeWidth, figSizeLength))
     plt.ylabel('')
     plt.title(columnName + ', Over 50K')
-    plt.legend(labels=above50k.axes[0].values).set_bbox_to_anchor((1.1, .9, 0.1, 0.1))
+    plt.legend(labels=above50k.axes[0].values).set_bbox_to_anchor((1.2, .9, 0.1, 0.1))
     plt.savefig(f'vis/{columnName}_over50.png')
     
     values = list(below50k['CountOfBelow50k'])
     below50k.plot.pie(y='CountOfBelow50k', labels=values, figsize=(figSizeWidth, figSizeLength))
     plt.ylabel('')
     plt.title(columnName + ', Under 50K')
-    plt.legend(labels=below50k.axes[0].values).set_bbox_to_anchor((1.1, .9, 0.1, 0.1))
+    plt.legend(labels=below50k.axes[0].values).set_bbox_to_anchor((1.2, .9, 0.1, 0.1))
     plt.savefig(f'vis/{columnName}_under50.png')
+
+def generateGeneralPopulationPieCharts(df, columnName, figSizeWidth = 10, figSizeLength = 5, barWidth = 0.5,  xticksRotation = None):
+    df = df[[columnName, 'Below_50k']]
+    df = df.groupby(columnName).count().rename(columns={'Below_50k': 'Count'})
+    values = list(df['Count'])
+    df.plot.pie(y='Count', labels=values, figsize=(figSizeWidth, figSizeLength))
+    plt.ylabel('')
+    plt.title(columnName + ' Totals in Population')
+    plt.legend(labels=df.axes[0].values).set_bbox_to_anchor((1.2, .9, 0.1, 0.1))
+    plt.savefig(f'vis/{columnName}_total.png')
+    
+    
     
 if __name__ == "__main__":
     main()
