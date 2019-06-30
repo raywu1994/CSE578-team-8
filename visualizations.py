@@ -43,8 +43,8 @@ def load_data():
     all_data = pd.concat([training_data, test_data])
 
     #set some calculated fields and clean column names for presentation
-    all_data['Below_50k'] = all_data['Salarys'].apply(lambda x: False if x == ' >50K' else True)
-    all_data['From_USA'] = all_data['NTVCTRY'].apply(lambda x: True if x == ' United-States' else False)
+    all_data['Below_50k'] = all_data['Salarys'].apply(lambda x: False if '>50K' in x  else True)
+    all_data['From_USA'] = all_data['NTVCTRY'].apply(lambda x: True if  'United-States' in x else False)
     all_data['Age'] = pd.cut(all_data['Age'],bins=[0,19,29,39,49,59,69,120], labels=['17-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-90'])
     all_data['Hours Worked Per Week'] = pd.cut(all_data['HRSPERWK'], bins=[0,29,39,40,59,1000], labels=['Under 30', '30-39', '40', '41-59','Over 60'])
     all_data['Education'] = np.select([all_data['Education'].isin([' 9th',' 10th',' 11th',' 12th']),
@@ -52,6 +52,7 @@ def load_data():
                                             all_data['Education'] == ' Bachelors', all_data['Education'] == ' Some-college',
                                             all_data['Education'].isin([' Masters',' Doctorate'])],
                                           ['Some High School', 'HS Grad', 'Associates Degree', 'Bachelors Degree', 'Some College', 'Graduate Degree'], default='Other')
+    all_data['Race'] = all_data['Race'].apply(lambda x: 'White' if 'White' in x else 'Non-White')
 
     # Fix this typo is the data file
     all_data['Marital Status'] = all_data['Martial_Status']
