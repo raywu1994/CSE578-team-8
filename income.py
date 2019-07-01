@@ -4,7 +4,10 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt 
 import seaborn as sn
 from sklearn.metrics import confusion_matrix, classification_report
-from sklearn import preprocessing, cross_validation, svm
+from sklearn import preprocessing, svm
+from sklearn.model_selection import cross_validate
+from sklearn.model_selection import train_test_split
+
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier, export_graphviz, export
 from sklearn.metrics import confusion_matrix, classification_report
@@ -49,7 +52,7 @@ data_x=np.array(comb_df.drop('income',1))
 data_y=np.array(comb_df['income'])
 data_x = preprocessing.scale(data_x)
 
-train_x,test_x,train_y,test_y= cross_validation.train_test_split(data_x,data_y,test_size=0.3)
+train_x,test_x,train_y,test_y= train_test_split(data_x,data_y,test_size=0.3)
 
 ### Decision Tree to Predict  and acuracy score#########
 
@@ -63,7 +66,3 @@ A_score=accuracy_score(test_y,tre_prdct)
 metrics.accuracy_score(test_y,tre_prdct)
 
 print(A_score)
-
-#############Visualizations to show the data#######################################
-
-## use vs_df dataframe for visualization ##############
